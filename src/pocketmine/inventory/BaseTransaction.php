@@ -179,11 +179,6 @@ class BaseTransaction implements Transaction{
 			return ["in" => $this->getTargetItem(),
 					"out" => null];
 
-		}elseif($this->sourceItem->deepEquals($this->targetItem, false) and $this->sourceItem->canBeDamaged()){
-			//Tool/armour damage change, no inventory change to speak of (not really)
-			//BUG: Swapping two of the same tool with different damages will cause the second one to be lost. This will need fixing.
-			return null;
-			
 		}else{
 			//Some other slot change - an item swap or a non-tool/armour meta change
 			return ["in" => $this->getTargetItem(), 
