@@ -3475,13 +3475,13 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					if($packet->slot >= $this->inventory->getSize()){
 						break;
 					}
-					$transaction = new BaseTransaction($this->inventory, $packet->slot, $this->inventory->getItem($packet->slot), $packet->item);
+					$transaction = new BaseTransaction($this->inventory, $packet->slot, $packet->item);
 				}elseif($packet->windowid === ContainerSetContentPacket::SPECIAL_ARMOR){ //Our armor
 					if($packet->slot >= 4){
 						break;
 					}
 
-					$transaction = new BaseTransaction($this->inventory, $packet->slot + $this->inventory->getSize(), $this->inventory->getArmorItem($packet->slot), $packet->item);
+					$transaction = new BaseTransaction($this->inventory, $packet->slot + $this->inventory->getSize(), $packet->item);
 				}elseif(isset($this->windowIndex[$packet->windowid])){ //Other type of inventory window
 				
 					//TODO: Make Anvils use the floating inventory. They do not currently function on Win10.
@@ -3507,12 +3507,12 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						}
 					}
 
-					$transaction = new BaseTransaction($inv, $packet->slot, $inv->getItem($packet->slot), $packet->item);
+					$transaction = new BaseTransaction($inv, $packet->slot, $packet->item);
 				}else{
 					echo "no window open; dropped an item?\n";
 					break;
 					//Dropped an item?
-					//$transaction = new BaseTransaction($this->inventory, $packet->slot, $this->inventory->getItem($packet->slot), $packet->item);
+					//$transaction = new BaseTransaction($this->inventory, $packet->slot, $packet->item);
 				}
 				
 				//echo "adding a transaction\n";

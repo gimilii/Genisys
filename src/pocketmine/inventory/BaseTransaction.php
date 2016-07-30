@@ -30,8 +30,6 @@ class BaseTransaction implements Transaction{
 	/** @var int */
 	protected $slot;
 	/** @var Item */
-	protected $sourceItem;
-	/** @var Item */
 	protected $targetItem;
 	/** @var float */
 	protected $creationTime;
@@ -48,10 +46,9 @@ class BaseTransaction implements Transaction{
 	 * @param Item|null		 $sourceItem
 	 * @param Item      	 $targetItem
 	 */
-	public function __construct($inventory, $slot, $sourceItem, Item $targetItem, $transactionType = Transaction::TYPE_NORMAL){
+	public function __construct($inventory, $slot, Item $targetItem, $transactionType = Transaction::TYPE_NORMAL){
 		$this->inventory = $inventory;
 		$this->slot = (int) $slot;
-		$this->sourceItem = ($sourceItem instanceof Item? clone $sourceItem: null);
 		$this->targetItem = clone $targetItem;
 		$this->creationTime = microtime(true);
 		$this->transactionType = $transactionType;
@@ -68,19 +65,11 @@ class BaseTransaction implements Transaction{
 	public function getSlot(){
 		return $this->slot;
 	}
-
-	public function getSourceItem(){
-		return clone $this->sourceItem;
-	}
-
+	
 	public function getTargetItem(){
 		return clone $this->targetItem;
 	}
-	
-	public function setSourceItem(Item $item){
-		$this->sourceItem = clone $item;
-	}
-	
+
 	public function setTargetItem(Item $item){
 		$this->targetItem = clone $item;
 	}
@@ -141,18 +130,20 @@ class BaseTransaction implements Transaction{
 	 * ]
 	 */
 	public function getChange(){
+		$sourceItem = $this->getInventory()->getItem($this->slot);
+		
 		if($this->getTransactionType() === Transaction::TYPE_DROP_ITEM){
 			return ["in" => $this->getTargetItem(),
 					"out" => null];
 		}
 		
-		if($this->sourceItem->deepEquals($this->targetItem, true, true, true)){
+		if($sourceItem->deepEquals($this->targetItem, true, true, true)){
 			//This should never happen, somehow a change happened where nothing changed
 			return null;
 			
-		}elseif($this->sourceItem->deepEquals($this->targetItem)){ //Same item, change of count
-			$item = $this->getSourceItem();
-			$countDiff = $this->targetItem->getCount() - $this->sourceItem->getCount();
+		}elseif($sourceItem->deepEquals($this->targetItem)){ //Same item, change of count
+			$item = clone $sourceItem;
+			$countDiff = $this->targetItem->getCount() - $sourceItem->getCount();
 			$item->setCount(abs($countDiff));
 			
 			if($countDiff < 0){	//Count decreased
@@ -168,21 +159,21 @@ class BaseTransaction implements Transaction{
 				echo "Wow, you broke the code\n";
 				return null; 
 			}
-		}elseif($this->sourceItem->getId() !== Item::AIR and $this->targetItem->getId() === Item::AIR){
+		}elseif($sourceItem->getId() !== Item::AIR and $this->targetItem->getId() === Item::AIR){
 			//Slot emptied
 			//return the item removed
 			return ["in" => null,
-					"out" => $this->getSourceItem()];
+					"out" => clone $sourceItem];
 			
-		}elseif($this->sourceItem->getId() === Item::AIR and $this->targetItem->getId() !== Item::AIR){
+		}elseif($sourceItem->getId() === Item::AIR and $this->targetItem->getId() !== Item::AIR){
 			//Slot filled with a new item (item added)
 			return ["in" => $this->getTargetItem(),
 					"out" => null];
 
 		}else{
-			//Some other slot change - an item swap or a non-tool/armour meta change
+			//Some other slot change - an item swap (tool damage changes will be ignored as they are processed server-side before any change is sent by the client
 			return ["in" => $this->getTargetItem(), 
-					"out" => $this->getSourceItem()];
+					"out" => clone $sourceItem];
 		}
 		//Don't remove this comment until you're sure there's nothing missing.
 	}
