@@ -43,8 +43,8 @@ class BaseTransaction implements Transaction{
 	/**
 	 * @param Inventory|null $inventory
 	 * @param int|null       $slot
-	 * @param Item|null		 $sourceItem
-	 * @param Item      	 $targetItem
+	 * @param Item           $targetItem
+	 * @param int            $transactionType
 	 */
 	public function __construct($inventory, $slot, Item $targetItem, $transactionType = Transaction::TYPE_NORMAL){
 		$this->inventory = $inventory;
@@ -131,11 +131,6 @@ class BaseTransaction implements Transaction{
 	 */
 	public function getChange(){
 		$sourceItem = $this->getInventory()->getItem($this->slot);
-		
-		if($this->getTransactionType() === Transaction::TYPE_DROP_ITEM){
-			return ["in" => $this->getTargetItem(),
-					"out" => null];
-		}
 		
 		if($sourceItem->deepEquals($this->targetItem, true, true, true)){
 			//This should never happen, somehow a change happened where nothing changed
