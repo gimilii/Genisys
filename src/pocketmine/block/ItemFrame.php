@@ -48,7 +48,7 @@ class ItemFrame extends Transparent{
 
 	public function onActivate(Item $item, Player $player = null){
 		$tile = $this->getLevel()->getTile($this);
-		if(!$tile instanceof ItemFrameTile){
+		if(!($tile instanceof ItemFrameTile)){
 			$nbt = new CompoundTag("", [
 				new StringTag("id", Tile::ITEM_FRAME),
 				new IntTag("x", $this->x),
@@ -57,11 +57,13 @@ class ItemFrame extends Transparent{
 				new ByteTag("ItemRotation", 0),
 				new FloatTag("ItemDropChance", 1.0)
 			]);
-			Tile::createTile(Tile::ITEM_FRAME, $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), $nbt);
+			$tile = Tile::createTile(Tile::ITEM_FRAME, $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), $nbt);
 		}
 
 		if($tile->getItem()->getId() === 0){
-			$tile->setItem(Item::get($item->getId(), $item->getDamage(), 1));
+			$item = clone $item;
+			$item->setCount(1);
+			$tile->setItem($item);
 			if($player instanceof Player){
 				if($player->isSurvival()) {
 					$count = $item->getCount();

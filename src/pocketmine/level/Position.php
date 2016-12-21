@@ -72,31 +72,7 @@ class Position extends Vector3{
 	 * @return bool
 	 */
 	public function isValid(){
-		return $this->level !== null;
-	}
-
-	/**
-	 * Marks the level reference as strong so it won't be collected
-	 * by the garbage collector.
-	 *
-	 * @deprecated
-	 *
-	 * @return bool
-	 */
-	public function setStrong(){
-		return false;
-	}
-
-	/**
-	 * Marks the level reference as weak so it won't have effect against
-	 * the garbage collector decision.
-	 *
-	 * @deprecated
-	 *
-	 * @return bool
-	 */
-	public function setWeak(){
-		return false;
+		return $this->getLevel() instanceof Level;
 	}
 
 	/**

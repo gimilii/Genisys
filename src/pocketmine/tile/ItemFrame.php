@@ -34,8 +34,7 @@ class ItemFrame extends Spawnable{
 
 	public function __construct(FullChunk $chunk, CompoundTag $nbt){
 		if(!isset($nbt->Item)){
-			$nbt->Item = NBT::putItemHelper(Item::get(Item::AIR));
-			$nbt->Item->setName("Item");
+			$nbt->Item = Item::get(Item::AIR)->nbtSerialize(-1, "Item");
 		}
 
 		if(!isset($nbt->ItemRotation)){
@@ -63,21 +62,21 @@ class ItemFrame extends Spawnable{
 	}
 
 	public function getItem(){
-		return NBT::getItemHelper($this->namedtag->Item);
+		return Item::nbtDeserialize($this->namedtag->Item);
 	}
 
 	public function setItem(Item $item, bool $setChanged = true){
-		$nbtItem = NBT::putItemHelper($item);
-		$nbtItem->setName("Item");
-		$this->namedtag->Item = $nbtItem;
-		if($setChanged) $this->setChanged();
+		$this->namedtag->Item = $item->nbtSerialize(-1, "Item");
+		if($setChanged) {
+			$this->setChanged();
+		}
 	}
 
 	public function getItemDropChance(){
 		return $this->namedtag["ItemDropChance"];
 	}
 
-	public function setItemDropChance($chance = 1.0){
+	public function setItemDropChance(float $chance = 1.0){
 		$this->namedtag->ItemDropChance = new FloatTag("ItemDropChance", $chance);
 	}
 
@@ -90,7 +89,9 @@ class ItemFrame extends Spawnable{
 	}
 
 	public function getSpawnCompound(){
-		if(!isset($this->namedtag->Item)) $this->setItem(Item::get(Item::AIR), false);
+		if(!isset($this->namedtag->Item)){
+			$this->setItem(Item::get(Item::AIR), false);
+		}
 		/** @var CompoundTag $nbtItem */
 		$nbtItem = clone $this->namedtag->Item;
 		$nbtItem->setName("Item");

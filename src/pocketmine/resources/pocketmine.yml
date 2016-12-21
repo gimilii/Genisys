@@ -92,6 +92,10 @@ debug:
  #Enables /status, /gc
  commands: true
 
+player:
+ #Choose whether to enable player data saving.
+ save-player-data: true
+
 level-settings:
  #The default format that levels will use when created
  default-format: anvil
@@ -154,6 +158,17 @@ anonymous-statistics:
  #Sends anonymous statistics for data aggregation, plugin usage tracking
  enabled: true
  host: stats.pocketmine.net
+
+commands:
+ #Here you can customize server commands
+ #Specify command names to override the default set here.
+ #If no custom value is defined for a command, the default will be used.
+ #NOTE: Some commands cannot be disabled here, such as the important ones like /stop, /reload, etc.
+ default: true
+ #Set override values per command here
+ #For example, uncommenting the below will disable /plugins and /version
+ #version: false
+ #plugins: false
 
 aliases:
  #Examples:

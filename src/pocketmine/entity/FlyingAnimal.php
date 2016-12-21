@@ -1,11 +1,23 @@
 <?php
 
-/**
- * Author: boybook
- * OpenGenisys Project
+/*
  *
- * COPYRIGHT (C) FCCORE
-*/
+ *  _____   _____   __   _   _   _____  __    __  _____
+ * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
+ * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
+ * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
+ * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
+ * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author iTX Technologies
+ * @link https://itxtech.org
+ *
+ */
 
 namespace pocketmine\entity;
 
@@ -29,7 +41,7 @@ abstract class FlyingAnimal extends Creature implements Ageable{
         if($this->closed !== false){
             return false;
         }
-        if ($this->willMove(100) and $this->getLevel()->getServer()->aiEnabled) {
+        if ($this->willMove(100)) {
             if(++$this->switchDirectionTicker === $this->switchDirectionTicks){
                 $this->switchDirectionTicker = 0;
                 if(mt_rand(0, 100) < 50){
@@ -105,13 +117,11 @@ abstract class FlyingAnimal extends Creature implements Ageable{
 
 	public function initEntity(){
 		parent::initEntity();
-		if($this->getDataProperty(self::DATA_AGEABLE_FLAGS) === null){
-			$this->setDataProperty(self::DATA_AGEABLE_FLAGS, self::DATA_TYPE_BYTE, 0);
-		}
+		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY, false);
 	}
 
 	public function isBaby(){
-		return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
+		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
 	}
 
     public function attack($damage, EntityDamageEvent $source){

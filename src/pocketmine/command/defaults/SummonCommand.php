@@ -1,11 +1,23 @@
 <?php
-/**
- * Author: gaoyichuan
- * Time: 2016/2/2 15:16
- *
- * OpenGenisys Project
- */
 
+/*
+ *
+ *  _____   _____   __   _   _   _____  __    __  _____
+ * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
+ * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
+ * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
+ * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
+ * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author iTX Technologies
+ * @link https://itxtech.org
+ *
+ */
 
 namespace pocketmine\command\defaults;
 
@@ -110,7 +122,7 @@ class SummonCommand extends VanillaCommand{
 		$entity = null;
 		$type = $args[0];
 		$level = ($sender instanceof Player) ? $sender->getLevel() : $sender->getServer()->getDefaultLevel();
-		$chunk = $level->getChunk(round($x) >> 4, round($z) >> 4);
+		$chunk = $level->getChunk($x >> 4, $z >> 4, true);
 		$nbt = new CompoundTag("", [
 			"Pos" => new ListTag("Pos", [
 				new DoubleTag("", $x),

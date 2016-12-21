@@ -29,6 +29,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityExplodeEvent;
 use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\item\Item;
+use pocketmine\level\particle\HugeExplodeSeedParticle;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
@@ -66,21 +67,9 @@ class Explosion{
 	}
 
 	/**
-	 * @deprecated
 	 * @return bool
 	 */
-	public function explode(){
-		if($this->explodeA()){
-			return $this->explodeB();
-		}
-
-		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function explodeA(){
+	public function explodeA() : bool{
 		if($this->size < 0.1){
 			return false;
 		}
@@ -131,7 +120,7 @@ class Explosion{
 		return true;
 	}
 
-	public function explodeB(){
+	public function explodeB() : bool{
 		$send = [];
 		$updateBlocks = [];
 
@@ -238,6 +227,8 @@ class Explosion{
 		$pk->radius = $this->size;
 		$pk->records = $send;
 		$this->level->addChunkPacket($source->x >> 4, $source->z >> 4, $pk);
+
+		$this->level->addParticle(new HugeExplodeSeedParticle($source));
 
 		return true;
 	}

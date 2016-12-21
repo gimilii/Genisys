@@ -65,32 +65,6 @@ class Block extends Position implements BlockIds, Metadatable{
 	/** @var AxisAlignedBB */
 	public $boundingBox = null;
 
-	/**
-	 * Backwards-compatibility with old way to define block properties
-	 *
-	 * @deprecated
-	 *
-	 * @param string $key
-	 *
-	 * @return mixed
-	 */
-	public function __get($key){
-		static $map = [
-			"hardness" => "getHardness",
-			"lightLevel" => "getLightLevel",
-			"frictionFactor" => "getFrictionFactor",
-			"name" => "getName",
-			"isPlaceable" => "canBePlaced",
-			"isReplaceable" => "canBeReplaced",
-			"isTransparent" => "isTransparent",
-			"isSolid" => "isSolid",
-			"isFlowable" => "canBeFlowedInto",
-			"isActivable" => "canBeActivated",
-			"hasEntityCollision" => "hasEntityCollision"
-		];
-		return isset($map[$key]) ? $this->{$map[$key]}() : null;
-	}
-
 	public static function init(){
 		if(self::$list === null){
 			self::$list = new \SplFixedArray(256);
@@ -305,6 +279,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::UNPOWERED_REPEATER_BLOCK] = UnpoweredRepeater::class;
 			self::$list[self::CAULDRON_BLOCK] = Cauldron::class;
 			self::$list[self::INVISIBLE_BEDROCK] = InvisibleBedrock::class;
+			self::$list[self::HOPPER_BLOCK] = Hopper::class;
 
 			foreach(self::$list as $id => $class){
 				if($class !== null){
@@ -353,6 +328,10 @@ class Block extends Position implements BlockIds, Metadatable{
 	 * @return Block
 	 */
 	public static function get($id, $meta = 0, Position $pos = null){
+		if($id > 0xff){
+			trigger_error("BlockID cannot be higher than 255, defaulting to 0", E_USER_NOTICE);
+			$id = 0;
+		}
 		try{
 			$block = self::$list[$id];
 			if($block !== null){

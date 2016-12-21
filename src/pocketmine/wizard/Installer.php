@@ -49,14 +49,6 @@ class Installer{
 	private $defaultLang;
 
 	public function __construct(){
-		echo PHP_EOL;
-		echo "  _____   _____   __   _   _   _____  __    __  _____".PHP_EOL;
-		echo " /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/".PHP_EOL;
-		echo " | |     | |__   |   \| | | | | |___   \ \/ /  | |___".PHP_EOL;
-		echo " | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \\".PHP_EOL;
-		echo " | |_| | | |___  | | \  | | |  ___| |   / /     ___| |".PHP_EOL;
-		echo " \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/".PHP_EOL;
-		echo PHP_EOL . PHP_EOL;
 		echo "[*] Genisys set-up wizard\n";
 		echo "[*] Please select a language:\n";
 		foreach(InstallerLang::$languages as $short => $native){
@@ -143,6 +135,10 @@ LICENSE;
 		}while($port <= 0 or $port > 65535);
 		$config->set("server-port", $port);
 		
+		echo "[*] " . $this->lang->online_mode_info . "\n";
+		echo "[?] " . $this->lang->online_mode . " (y/N): ";
+		$config->set("online-mode", strtolower($this->getInput("y")) == "y");
+		
 		echo "[?] " . $this->lang->level_name . " (" . self::DEFAULT_LEVEL_NAME . "): ";
 		$config->set("level-name", $this->getInput(self::DEFAULT_LEVEL_NAME));
 		
@@ -221,7 +217,7 @@ LICENSE;
 		echo "[?] " . $this->lang->rcon_enable . " (y/N): ";
 		if(strtolower($this->getInput("n")) === "y"){
 			$config->set("enable-rcon", true);
-			$password = substr(base64_encode(@Utils::getRandomBytes(20, false)), 3, 10);
+			$password = substr(base64_encode(random_bytes(20)), 3, 10);
 			$config->set("rcon.password", $password);
 			echo "[*] " . $this->lang->rcon_password . ": " . $password . "\n";
 		}else{

@@ -73,11 +73,11 @@ namespace pocketmine {
 	use pocketmine\wizard\Installer;
 
 	const VERSION = ""; //will be set by CI to a git hash
-	const API_VERSION = "2.0.0";
+	const API_VERSION = "2.1.0";
 	const CODENAME = "Kyrios";
-	const MINECRAFT_VERSION = "v0.15.4 alpha";
-	const MINECRAFT_VERSION_NETWORK = "0.15.4";
-	const GENISYS_API_VERSION = '1.8.0';
+	const MINECRAFT_VERSION = "v0.16.0.5 alpha";
+	const MINECRAFT_VERSION_NETWORK = "0.16.0.5";
+	const GENISYS_API_VERSION = '1.9.3';
 
 	/*
 	 * Startup code. Do not look at it, it may harm you.
@@ -155,7 +155,7 @@ namespace pocketmine {
 			//If system timezone detection fails or timezone is an invalid value.
 			if($response = Utils::getURL("http://ip-api.com/json")
 				and $ip_geolocation_data = json_decode($response, true)
-				and $ip_geolocation_data['status'] != 'fail'
+				and $ip_geolocation_data['status'] !== 'fail'
 				and date_default_timezone_set($ip_geolocation_data['timezone'])
 			){
 				//Again, for redundancy.
@@ -415,6 +415,15 @@ namespace pocketmine {
 			++$errors;
 		}
 	}
+	
+	if(extension_loaded("xdebug")){
+		$logger->warning("
+
+
+	You are running PocketMine with xdebug enabled. This has a major impact on performance.
+
+		");
+	}
 
 	if(!extension_loaded("curl")){
 		$logger->critical("Unable to find the cURL extension.");
@@ -437,7 +446,7 @@ namespace pocketmine {
 	}
 
 	if($errors > 0){
-		$logger->critical("Please use the installer provided on the homepage, or recompile PHP again.");
+		$logger->critical("Please update your PHP from itxtech.org/genisys/get/, or recompile PHP again.");
 		$logger->shutdown();
 		$logger->join();
 		exit(1); //Exit with error
@@ -451,7 +460,7 @@ namespace pocketmine {
 
 	@define("ENDIANNESS", (pack("d", 1) === "\77\360\0\0\0\0\0\0" ? Binary::BIG_ENDIAN : Binary::LITTLE_ENDIAN));
 	@define("INT32_MASK", is_int(0xffffffff) ? 0xffffffff : -1);
-	@ini_set("opcache.mmap_base", bin2hex(Utils::getRandomBytes(8, false))); //Fix OPCache address errors
+	@ini_set("opcache.mmap_base", bin2hex(random_bytes(8))); //Fix OPCache address errors
 
 	$lang = "unknown";
 	if(!file_exists(\pocketmine\DATA . "server.properties") and !isset($opts["no-wizard"])){

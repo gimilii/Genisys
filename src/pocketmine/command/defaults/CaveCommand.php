@@ -1,7 +1,22 @@
 <?php
-/**
- * Author: boybook
- * OpenGenisys Project
+
+/*
+ *
+ *  _____   _____   __   _   _   _____  __    __  _____
+ * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
+ * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
+ * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
+ * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
+ * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author iTX Technologies
+ * @link https://itxtech.org
+ *
  */
 
 namespace pocketmine\command\defaults;
@@ -25,7 +40,7 @@ class CaveCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"Generate a cave",
-			"%commands.cave.usage"
+			"%pocketmine.commands.cave.usage"
 		);
 		$this->setPermission("pocketmine.command.cave");
 	}
@@ -34,9 +49,10 @@ class CaveCommand extends VanillaCommand{
 		if(!$this->testPermission($sender)){
 			return true;
 		}
-
+		
+		//TODO: Get rid of this and add support for relative coordinaties
 		if($sender instanceof Player and $args[0] == "getmypos"){
-			$sender->sendMessage("You position ({$sender->getX()}, {$sender->getY()}, {$sender->getZ()}, {$sender->getLevel()->getFolderName()})");
+			$sender->sendMessage("Your position: ({$sender->getX()}, {$sender->getY()}, {$sender->getZ()}, {$sender->getLevel()->getFolderName()})");
 			return true;
 		}
 
@@ -57,11 +73,11 @@ class CaveCommand extends VanillaCommand{
 		$caves[2] = isset($args[2]) ? $args[2] : mt_rand(1, 6);
 		$caves[4] = isset($args[3]) ? $args[3] : mt_rand(1, 10);
 		$caves[3] = [false, true, true];
-		$sender->sendMessage(new TranslationContainer("commands.cave.info", [$caves[0], $caves[1], $caves[2], $caves[3]]));
-		$sender->sendMessage("[Caves] " . TextFormat::YELLOW . "%commands.cave.start");
+		$sender->sendMessage(new TranslationContainer("pocketmine.commands.cave.info", [$caves[0], $caves[1], $caves[2], $caves[3]]));
+		$sender->sendMessage(new TranslationContainer(TextFormat::YELLOW . "%pocketmine.commands.cave.start"));
 		$sender->sendMessage($pos->x . " " . $pos->y . " " . $pos->z);
 		$this->caves($pos, $caves);
-		$sender->sendMessage("[Caves] " . TextFormat::GREEN . "%commands.cave.success");
+		$sender->sendMessage(new TranslationContainer(TextFormat::GREEN . "%pocketmine.commands.cave.success"));
 		return true;
 	}
 

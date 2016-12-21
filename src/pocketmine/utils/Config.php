@@ -88,7 +88,6 @@ class Config{
 		$this->config = [];
 		$this->nestedCache = [];
 		$this->correct = false;
-		$this->load($this->file);
 		$this->load($this->file, $this->type);
 	}
 
@@ -319,46 +318,6 @@ class Config{
 	 */
 	public function get($k, $default = false){
 		return ($this->correct and isset($this->config[$k])) ? $this->config[$k] : $default;
-	}
-
-	/**
-	 * @param string $path
-	 *
-	 * @deprecated
-	 *
-	 * @return mixed
-	 */
-	public function getPath($path){
-		$currPath =& $this->config;
-		foreach(explode(".", $path) as $component){
-			if(isset($currPath[$component])){
-				$currPath =& $currPath[$component];
-			}else{
-				$currPath = null;
-			}
-		}
-
-		return $currPath;
-	}
-
-	/**
-	 *
-	 * @deprecated
-	 *
-	 * @param string $path
-	 * @param mixed  $value
-	 */
-	public function setPath($path, $value){
-		$currPath =& $this->config;
-		$components = explode(".", $path);
-		$final = array_pop($components);
-		foreach($components as $component){
-			if(!isset($currPath[$component])){
-				$currPath[$component] = [];
-			}
-			$currPath =& $currPath[$component];
-		}
-		$currPath[$final] = $value;
 	}
 
 	/**

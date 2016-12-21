@@ -111,7 +111,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 		if($i < 0){
 			return Item::get(Item::AIR, 0, 0);
 		}else{
-			return NBT::getItemHelper($this->namedtag->Items[$i]);
+			return Item::nbtDeserialize($this->namedtag->Items[$i]);
 		}
 	}
 
@@ -126,8 +126,6 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		$d = NBT::putItemHelper($item, $index);
-
 		if($item->getId() === Item::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
@@ -138,9 +136,9 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 					break;
 				}
 			}
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}else{
-			$this->namedtag->Items[$i] = $d;
+			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
 		}
 
 		return true;
@@ -163,6 +161,13 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 		return $this->inventory;
 	}
 
+	/**
+	 * @return DoubleChestInventory|null
+	 */
+	public function getDoubleInventory(){
+		return $this->doubleInventory;
+	}
+
 	protected function checkPairing(){
 		if(($pair = $this->getPair()) instanceof Chest){
 			if(!$pair->isPaired()){
@@ -170,10 +175,14 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				$pair->checkPairing();
 			}
 			if($this->doubleInventory === null){
-				if(($pair->x + ($pair->z << 15)) > ($this->x + ($this->z << 15))){ //Order them correctly
-					$this->doubleInventory = new DoubleChestInventory($pair, $this);
+				if(($p = $pair->getDoubleInventory()) instanceof DoubleChestInventory){
+					$this->doubleInventory = $p;
 				}else{
-					$this->doubleInventory = new DoubleChestInventory($this, $pair);
+					if(($pair->x + ($pair->z << 15)) > ($this->x + ($this->z << 15))){ //Order them correctly
+						$this->doubleInventory = new DoubleChestInventory($pair, $this);
+					}else{
+						$this->doubleInventory = new DoubleChestInventory($this, $pair);
+					}
 				}
 			}
 		}else{

@@ -2,7 +2,7 @@
 
 #設定檔案版本
 config:
- version: 17
+ version: 22
 
 level:
  #設定是否變換天氣
@@ -20,16 +20,10 @@ level:
 player:
  #是否打開飢餓
  hunger: true
- #飢餓值扣血下限
- hunger-health: 10
- #飢餓值飢餓值計時器，預設80=4秒
- hunger-timer: 3000
  #是否打開經驗系統
  experience: true
  #是否開啟死亡不掉落
  keep-inventory: false
- #背包格數
- inventory-num: 36
  #是否開啟切換模式自動清除背包
  auto-clear-inventory: true
  #是否開啟死亡經驗不掉落
@@ -44,8 +38,6 @@ nether:
  level-name: "nether"
  
 server:
- #經驗數據預生成，0不啟用
- experience-cache: 65535
  #是否允許生成鐵傀儡
  allow-iron-golem: false
  #是否允許生成雪傀儡
@@ -60,13 +52,6 @@ server:
  player-msg-type: 0
  login-msg: "§3@player 加入了遊戲"
  logout-msg: "§3@player 離開了遊戲"
- #是否從recipes.json讀取合成公式
- recipes-from-json: false
- #是否從creativeitems.json讀取創造物品
- creative-items-from-json: false
- #設置礦車行為方式
- #-1=禁用礦車移動, 0=自由移動, 1=沿鐵軌行駛
- minecart-moving-type: 0
  #是否進行移動檢測(不再拉回了)
  check-movement: true
  #是否限制創造某些功能(禁止丟物品, 禁止操作箱子等等)
@@ -100,19 +85,6 @@ redstone:
  #設定脈衝頻率, 預設: 1s
  pulse-frequency: 1
 
-synapse:
- #如果你想使用 Synapse API 或連接到一個synapse伺服器,請將enabled置為true
- enabled: false
- server-ip: 127.0.0.1
- server-port: 10305
- #設置該伺服器是否為接待大廳伺服器或主要伺服器
- is-main-server: true
- server-password: 16bitlongkey
- #設置該伺服器唯一的識別字
- description: "A Synapse client"
- #啟用Disable RakLib設置玩家僅能通過接待大廳伺服器或主要伺服器加入遊戲
- disable-rak: false
-
 dserver:
  #多服統一人數
  enable: false
@@ -138,31 +110,7 @@ dserver:
  retry-times: 3
  #伺服器列表，用;隔開，例如 1.example.com:19132;2.example.com:19133
  server-list: ""
- 
-ai:
- #AI總開關
- enable: false
- #殭屍的AI，0為關閉，1為1.0版AI，2為新AI（不完善）
- zombie: 1
- #殭屍豬人的AI
- pigzombie: true
- #牛和哞菇的AI
- cow: true
- #雞的AI
- chicken: true
- #羊的AI
- sheep: true
- #豬的AI
- pig: true
- #骷髏的AI
- skeleton: true
- #苦力帕的AI
- creeper: true
- #鐵傀儡的AI
- iron-golem: true
- #雪傀儡的AI
- snow-golem: true
- #苦力帕爆炸是否破壞方塊
- creeper-explode-destroy-block: false
- #是否允許自動生成生物
- mobgenerate: false
+
+inventory:
+ #Set this to true if you have problems with anvils. Will process inventory transactions in a vanilla fashion with no anti-cheats or verification.
+ allow-cheats: false
