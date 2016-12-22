@@ -23,8 +23,12 @@ namespace pocketmine\entity;
 
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use pocketmine\block\Air;
+use pocketmine\block\Obsidian;
+use pocketmine\block\Block;
+use pocketmine\math\Vector3;
 
-class Ghast extends FlyingAnimal{
+class Ghast extends Monster {
 	const NETWORK_ID = 41;
 
 	public $width = 6;
@@ -36,8 +40,12 @@ class Ghast extends FlyingAnimal{
 	}
 
 	public function initEntity(){
-		$this->setMaxHealth(10);
+		$this->setMaxHealth(1000);
 		parent::initEntity();
+		$block = new Obsidian();
+		$level = $this->getLevel();
+		$this->getLevel()->setBlock(new Vector3(168, 71, 257), $block);
+		$this->getLevel()->setBlock(new Vector3(168, 72, 257), $block);
 	}
 	
 	public function spawnTo(Player $player){
@@ -56,5 +64,12 @@ class Ghast extends FlyingAnimal{
 		$player->dataPacket($pk);
 
 		parent::spawnTo($player);
+	}
+	
+	public function kill(){
+		$block = new Air();
+		$this->getLevel()->setBlock(new Vector3(168, 71, 257), $block);
+		$this->getLevel()->setBlock(new Vector3(168, 72, 257), $block);
+		parent::kill();
 	}
 }
