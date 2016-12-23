@@ -105,6 +105,8 @@ abstract class Monster extends Creature{
 		if($this->closed !== false){
 			return false;
 		}
+		
+		return parent::onUpdate($currentTick);
 	
 		$this->lastUpdate = $currentTick;
 	

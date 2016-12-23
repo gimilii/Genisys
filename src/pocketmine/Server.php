@@ -168,6 +168,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 use pocketmine\utils\UUID;
 use pocketmine\utils\VersionString;
+use pocketmine\entity\ai\AIHolder;
 
 /**
  * The class that manages everything
@@ -366,6 +367,9 @@ class Server{
 	public $enchantingTableEnabled = true;
 	public $countBookshelf = false;
 	public $allowInventoryCheats = false;
+	public $aiConfig = [];
+	public $aiEnabled = false;
+	public $aiHolder = null;
 
 	/** @var CraftingDataPacket */
 	private $recipeList = null;
@@ -1562,6 +1566,22 @@ class Server{
 		$this->countBookshelf = $this->getAdvancedProperty("enchantment.count-bookshelf", false);
 
 		$this->allowInventoryCheats = $this->getAdvancedProperty("inventory.allow-cheats", false);
+		
+		$this->aiEnabled = $this->getAdvancedProperty("ai.enable", false);
+		$this->aiConfig = [
+				"cow" => $this->getAdvancedProperty("ai.cow", true),
+				"chicken" => $this->getAdvancedProperty("ai.chicken", true),
+				"zombie" => $this->getAdvancedProperty("ai.zombie", 1),
+				"skeleton" => $this->getAdvancedProperty("ai.skeleton", true),
+				"pig" => $this->getAdvancedProperty("ai.pig", true),
+				"sheep" => $this->getAdvancedProperty("ai.sheep", true),
+				"creeper" => $this->getAdvancedProperty("ai.creeper", true),
+				"irongolem" => $this->getAdvancedProperty("ai.iron-golem", true),
+				"snowgolem" => $this->getAdvancedProperty("ai.snow-golem", true),
+				"pigzombie" => $this->getAdvancedProperty("ai.pigzombie", true),
+				"creeperexplode" => $this->getAdvancedProperty("ai.creeper-explode-destroy-block", false),
+				"mobgenerate" => $this->getAdvancedProperty("ai.mobgenerate", false),
+		];
 	}
 	
 	/**
@@ -1823,6 +1843,8 @@ class Server{
 			EnchantmentLevelTable::init();
 			Color::init();
 			$this->craftingManager = new CraftingManager();
+			
+			if($this->aiEnabled) $this->aiHolder = new AIHolder($this);
 
 			$this->pluginManager = new PluginManager($this, $this->commandMap);
 			$this->pluginManager->subscribeToPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this->consoleSender);
@@ -2910,5 +2932,9 @@ class Server{
 		Tile::registerTile(MobSpawner::class);
 		Tile::registerTile(Sign::class);
 		Tile::registerTile(Skull::class);
+	}
+	
+	public function getAIHolder(){
+		return $this->aiHolder;
 	}
 }
